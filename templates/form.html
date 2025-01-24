@@ -8,58 +8,61 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="sm:bg-[#f2f2f2] flex items-center justify-center h-screen relative">
-    <img src="{% static 'images/aramcologo.png' %}" alt="aramco Logo" class="absolute sm:top-10 sm:right-10 top-2 right-2 w-28 h-auto">
+    <img src="{% static 'images/ground.jpg' %}" class="absolute -z-20 h-screen w-screen blur-sm">
+   
 
-    <div  id="popup" class="hidden w-[200px] h-[200px] p-1  bg-gradient-to-r from-[#84BD00]  to-[#00a3e0] ">
-     <div  class=" bg-white w-full h-full flex items-center justify-center">
-        <p class="text-xl text-[#1798d5] text-center ">Your entry has been submitted</p>
-     </div>
-    </div>
-
-    </div>
-    <div id="main" class="sm:shadow-md w-full max-w-md p-1  sm:bg-gradient-to-r from-[#84BD00]  to-[#00a3e0] ">
-        <div  class="bg-white p-8 w-full max-w-md">
-            <h1 class="text-xl sm:text-2xl font-bold text-center text-[#5f646a] mb-1 sm:mb-6 tracking-[1px]">ARAMCO FORM</h1>
-            <form method="POST">
-                {% csrf_token %}
-                <div class="mb-4">
-                    <label for="name" class="block text-sm font-medium mb-2  text-[#007fad] tracking-[1px]">PARTICIPANT"S NAME</label>
-                    <input type="text" id="name" name="name" class="w-full border border-gray-300 p-2 focus:outline-none focus:border focus:border-[#83c1d7]" placeholder="Enter your name" required>
-                </div>
-                <div class="mb-4">
-                    <label for="contact" class="block text-sm font-medium mb-2 text-[#007fad] tracking-[1px]">CONTACT NUMBER</label>
-                    <input type="text" id="contact" name="contact" class="w-full border border-gray-300  p-2 focus:outline-none focus:border focus:border-[#83c1d7]" placeholder="Enter your contact number" required>
-                </div>
-                <div class="mb-4">
-                    <label for="email" class="block text-sm font-medium  mb-2 text-[#007fad] tracking-[1px]">EMAIL</label>
-                    <input type="email" id="email" name="email" class="w-full border border-gray-300  p-2 focus:outline-none focus:border focus:border-[#83c1d7]" placeholder="Enter your email" required>
-                </div>
-                <div class="mb-4">
-                    <label for="fuel" class="block text-sm font-medium mb-2 text-[#007fad] tracking-[1px]">FUEL TYPE</label>
-                    <select id="fuel" name="fuel" class="w-full border border-gray-300  p-2 focus:outline-none focus:border focus:border-[#83c1d7]" required>
-                        <option value="">Select Fuel Type</option>
-                        <option value="Petrol">Petrol</option>
-                        <option value="Diesel">Diesel</option>
-                        <option value="Electric">Electric</option>
-                    </select>
-                </div>
-                <div class="mb-6">
-                    <label for="vehicle" class="block text-sm font-medium mb-2 text-[#007fad] tracking-[1px]">VEHICLE NUMBER</label>
-                    <input type="text" id="vehicle" name="vehicle" class="w-full border border-gray-300  p-2 focus:outline-none focus:border focus:border-[#83c1d7]" placeholder="Enter your vehicle number" required>
-                </div>
-
-                <div class="mb-6">
-                    <label for="receipt" class="block text-sm font-medium mb-2 text-[#007fad] tracking-[1px]">TRANSACTION RECEIPT NUMBER</label>
-                    <input type="text" id="receipt" name="vehicle" class="w-full border border-gray-300  p-2 focus:outline-none focus:border focus:border-[#83c1d7]" placeholder="Enter your receipt number" required>
-                </div>
-
-                <button type="submit" id="submitBtn" class="w-full bg-[#5f646a] text-white font-medium py-2  hover:bg-gray-600 transition duration-200">Submit</button>
-            </form>
     
-            {% comment %} <div id="alert" class="hidden mt-4 p-4 bg-red-100 border border-red-200 text-red-700 rounded-lg "></div> {% endcomment %}
-           
-        </div>
+     <div  id="popup" class=" hidden bg-[#0080e1] text-white w-[200px] h-[200px] flex items-center justify-center rounded-lg">
+        <p class="text-xl  text-center ">Your entry has been submitted</p>
+     </div>
+   
+
     </div>
+   
+    <div id="main" class="sm:shadow-md bg-[#0080e1] p-8 w-full max-w-md rounded-lg">
+        <div class="flex items-center justify-center">
+            <img src="{% static 'images/logo.png' %}" alt="aramco Logo" class=" mb-2 sm:w-36 w-28 h-auto">
+        </div>
+       
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="name" class="block text-sm font-medium mb-2 text-white tracking-[1px]">PARTICIPANT"S NAME</label>
+                <input type="text" id="name" name="name"  class="w-full border-2 placeholder-white text-white  border-white p-2 focus:outline-none focus:border-green-500 rounded-md  bg-transparent" placeholder="Enter your name" required>
+            </div>
+            <div class="mb-4">
+                <label for="contact" class="block text-sm font-medium mb-2 text-white tracking-[1px]">CONTACT NUMBER</label>
+                <input type="number" id="contact" name="contact" class="w-full border-2 placeholder-white text-white border-white p-2 focus:outline-none focus:border-green-500 rounded-md bg-transparent" placeholder="Enter your contact number" required>
+            </div>
+            <div class="mb-4">
+                <label for="email" class="block text-sm font-medium mb-2 text-white tracking-[1px]">EMAIL</label>
+                <input type="email" id="email" name="email" class="w-full border-2 border-white p-2 placeholder-white text-white focus:outline-none focus:border-green-500 rounded-md bg-transparent" placeholder="Enter your email" required>
+            </div>
+            <div class="mb-4">
+                <label for="fuel" class="block text-sm font-medium mb-2 text-white tracking-[1px]">FUEL TYPE</label>
+                <select id="fuel" name="fuel" class="w-full border-2 border-white p-2 focus:outline-none placeholder-white text-white focus:border-green-500 rounded-md bg-transparent" required>
+                    <option class="text-black" value="">Select Fuel Type</option>
+                    <option class="text-black" value="Petrol">Petrol</option>
+                    <option class="text-black" value="Diesel">Diesel</option>
+                    <option class="text-black" value="Electric">Electric</option>
+                </select>
+            </div>
+            <div class="mb-6">
+                <label for="vehicle" class="block text-sm font-medium mb-2 text-white tracking-[1px] ">VEHICLE NUMBER</label>
+                <input type="text" id="vehicle" name="vehicle" class="w-full border-2 border-white p-2 placeholder-white text-white focus:outline-none focus:border-green-500 rounded-md bg-transparent" placeholder="Enter your vehicle number" required>
+            </div>
+    
+            <div class="mb-6">
+                <label for="receipt" class="block text-sm font-medium mb-2 text-white tracking-[1px] ">TRANSACTION RECEIPT NUMBER</label>
+                <input type="text" id="receipt" name="receipt" class="w-full border-2 border-white p-2 placeholder-white text-white focus:outline-none focus:border-green-500 rounded-md bg-transparent" placeholder="Enter your receipt number" required>
+            </div>
+    
+            <button type="submit" id="submitBtn" class="w-full  text-white hover:text-[#0080e1] font-medium py-2 rounded-md hover:bg-gray-100 transition duration-200 border-2 border-white ">Submit</button>
+        </form>
+    
+        {% comment %} <div id="alert" class="hidden mt-4 p-4 bg-red-100 border border-red-200 text-red-700 rounded-lg "></div> {% endcomment %}
+    </div>
+    
     
 
     {% comment %} <div class="hidden sm:flex absolute w-full h-1/2  top-0 bg-[#dcedf4] -z-10"></div>

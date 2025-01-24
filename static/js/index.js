@@ -1,3 +1,19 @@
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+
 const submitButton = document.getElementById('submitBtn');
 
 submitButton && submitButton.addEventListener('click', async (e) => {
@@ -13,7 +29,59 @@ submitButton && submitButton.addEventListener('click', async (e) => {
     const popup = document.getElementById("popup");
     const main = document.getElementById("main");
 
-    console.log("Form Data:", { name, contact, email, fuel, vehicle,receipt });
+    console.log("Form Data:", { name, contact, email, fuel, vehicle, receipt });
+    
+    let contactNo = Number(contact)
+    
+    function generateRandomId() {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let randomId = '';
+        
+        for (let i = 0; i < 36; i++) {
+          randomId += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        
+        return randomId;
+      }
+      
+      // Example usage:
+      const randomId = generateRandomId();
+      console.log(randomId); // Outputs a 36-character random ID
+      
+    
+
+
+    try {
+        fetch('send_sms', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken,
+            },
+            body: JSON.stringify({ contactNo: contactNo, randomId: randomId})
+        })  
+            .then(response => {
+                response.json()
+                console.log("Response==>", response)
+            })
+            .then(data => {
+                console.log("Data==>",data)
+                if (data.success) {
+                    console.log("Successfully sent the message.",data)
+                }
+            })
+            .catch(error=> {
+            console.log("Error while sending message", error)
+            })
+        
+    }
+
+    catch (error) {
+        console.log("Error while sending message",error)
+        
+    }
+    
+
 
     try {
         // Send form data to the backend using fetch
