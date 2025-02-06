@@ -1,0 +1,41 @@
+@font-face {
+    font-family: 'MyCustomFont';
+    src: url('ManifaPro2_2.224-Regular.otf') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'ManifaPro';
+    src: url('{% static "ManifaPro2_2.224-Regular.otf" %}') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.font-manifapro {
+    font-family: 'ManifaPro', sans-serif;
+}
+
+
+/* Sweet Alert CSS */
+.custom-swal-popup {
+    background-color: #ffffff; /* Light blue background */
+    border: 2px solid #0080e1; /* Blue border */
+    border-radius: 0px; 
+    font-family: 'CustomFont'
+  }
+  
+  .custom-swal-title {
+    color: #0080e1; /* Blue title */
+    font-size: 24px; /* Larger title */
+    font-family: 'CustomFont'
+  }
+  
+  .custom-swal-confirm-button {
+    width:200px;
+    background-color: #0080e1; /* Green button */
+    color: white;
+    font-size: 18px; /* Larger font */
+    padding: 8px 16px; /* Adjust padding */
+    border-radius: 0px; 
+    font-family: 'CustomFont'
+  }

@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aramco- Bonus Entries</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="{% static 'css/style.css' %}" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="sm:bg-[#f2f2f2] grid items-center justify-center h-screen relative font-manifapro " style="background-image: url('{% static 'images/ground.jpg' %}');background-attachment: fixed; background-size: cover; background-position: center; background-repeat: no-repeat;
+">
+    {% comment %} <div class="absolute top-0 left-0 -z-20 w-full h-full bg-cover bg-fixed bg-center" style="background-image: url('{% static 'images/ground.jpg' %}');background-attachment: fixed; 
+"></div> {% endcomment %}
+
+
+    <div id="popup" class="hidden bg-[#0080e1] text-white w-[200px] h-[200px] flex items-center justify-center rounded-lg">
+        <p class="text-xl text-center">Your entry has been submitted</p>
+    </div>
+
+    <div id="terms-modal" class="hidden bg-[#0080e1]/80 text-white sm:w-[300px]  w-[350px] h-[80%] overflow-y-scroll p-4 flex flex-col rounded-lg" style="scrollbar-width: none;">
+        <p class="text-xl text-center font-bold mb-2">Terms & Conditions</p>
+        <p class="text-sm leading-relaxed">
+            1. <strong>Organizer Information</strong><br>
+            The promotion is organized by Gas & Oil Pakistan, located at 23-T Gulberg II, Lahore.<br><br>
+            2. <strong>Eligibility</strong><br>
+            Open to residents of Pakistan, aged 18 years or older. Employees of Gas & Oil Pakistan, its affiliates, and immediate family members are not eligible to participate.<br><br>
+            3. <strong>Promotion Period</strong><br>
+            The promotion begins on 3rd of Feb and ends on 4th of March. Entries submitted outside this period will not be considered.<br><br>
+            4. <strong>Entry Requirements</strong><br>
+            Participants must provide accurate personal information, including:<br>
+            - Full Name<br>
+            - Phone Number<br>
+            - Car Registration Number<br>
+            Entries are limited to one per person. Incomplete or false entries will be disqualified.<br><br>
+            5. <strong>Use of Personal Information</strong><br>
+            By entering, participants consent to the collection and use of their personal data for:<br>
+            - Administering the promotion<br>
+            - Contacting winners<br>
+            - Future promotional communications<br>
+            Personal data will be handled in accordance with Gas & Oil Pakistan's Privacy Policy and applicable data protection laws.<br><br>
+            6. <strong>Winner Selection and Notification</strong><br>
+            Winners will be selected through a random draw/judging process. Winners will be notified via phone/email within a specified number of days. If a winner cannot be contacted or fails to respond, an alternate winner will be selected.<br><br>
+            7. <strong>Prizes</strong><br>
+            The grand prize includes:<br>
+            - Air tickets to Dubai (if the final is held in Dubai, UAE)<br>
+            - Match pass for the ICC Champions Trophy<br>
+            Prizes are non-transferable and cannot be exchanged for cash. Resale of winning tickets is strictly prohibited.<br><br>
+            8. <strong>Participant Responsibilities</strong><br>
+            Winners are responsible for obtaining necessary travel documents, including visas, and covering any travel-related expenses not included in the prize.<br><br>
+            9. <strong>Publicity</strong><br>
+            By participating, winners agree to the use of their names on social media and other promotional channels for announcing results.<br><br>
+            10. <strong>Limitation of Liability</strong><br>
+            Gas & Oil Pakistan is not responsible for entries not received due to technical issues or any loss or damage arising from participation in the promotion or use of the prize.<br><br>
+            11. <strong>General Conditions</strong><br>
+            Gas & Oil Pakistan reserves the right to amend or cancel the promotion if necessary. Participants are deemed to have accepted these T&Cs by entering the promotion.
+        </br>
+            12. Gas & Oil Pakistan is the operator of “Aramco” branded gas stations in Pakistan. Any queries related to the competition should be directed towards Gas & Oil Pakistan.
+        </p>
+        <button id="close-terms-modal" class="w-full hover:text-white text-[#0080e1] font-medium py-2 rounded-md bg-white hover:bg-transparent transition duration-200 border-2 border-white mt-4">Back</button>
+    </div>
+    
+
+    <img id="main_bg" src="{% static 'images/top_bg.png' %}" class="w-full max-w-md h-auto">
+    <div id="main" class="sm:shadow-md bg-[#0080e1]/80 p-8 w-full max-w-md rounded-b-lg h-screen">
+        <div class="flex items-center justify-center">
+            <img src="{% static 'images/logo.png' %}" alt="Aramco Logo" class="mb-2 sm:w-36 w-28 h-auto">
+        </div>
+       
+        <form id="bonusEntriesForm" method="POST">
+            {% csrf_token %}
+      
+            <div class="mb-4">
+                <label for="contact" class="block text-sm font-medium mb-2 text-white tracking-[1px]">CONTACT NUMBER</label>
+                <input type="number" id="contact" name="contact" class="w-full border-2 placeholder-white text-white border-white p-2 focus:outline-none focus:border-green-500 rounded-md bg-transparent" placeholder="Enter your contact number" required>
+            </div>
+            <div class="mb-4">
+                <label for="entries" class="block text-sm font-medium mb-2 text-white tracking-[1px]">No of Bonus entries</label>
+                <select id="entries" name="entries" class="w-full border-2 border-white p-2 focus:outline-none placeholder-white text-white focus:border-green-500 rounded-md bg-transparent" required>
+                    <option class="text-black" value="">Select no of bonus entries</option>
+                    <option class="text-black" value="0">0</option>
+                    <option class="text-black" value="1">1</option>
+                    <option class="text-black" value="2">2</option>
+                </select>
+            </div>
+            
+            
+            <button type="submit"  class="w-full hover:text-white text-[#0080e1] font-medium py-2 rounded-md bg-white hover:bg-transparent transition duration-200 border-2 border-white">Submit</button>
+        </form>
+    </div>
+
+    <script src="{% static 'js/index.js' %}"></script>
+
+</body>
+</html>
