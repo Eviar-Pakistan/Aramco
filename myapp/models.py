@@ -6,13 +6,19 @@ class Participant(models.Model):
     name = models.CharField(max_length=100)
     contact = models.CharField(max_length=15)
     email = models.EmailField()
-    fuel_type = models.CharField(max_length=20)
     vehicle_number = models.CharField(max_length=50)
+    fuel_type = models.CharField(max_length=20)
+    cnic = models.CharField(max_length=50,null=True, blank=True)
     receipt_number = models.CharField(max_length=50)
-    entry_count = models.IntegerField(default=0)  # New field to track entries
+    entry_count = models.IntegerField(default=0)
+    latitude = models.FloatField(null=True, blank=True)   
+    longitude = models.FloatField(null=True, blank=True)  
+    vehicle = models.CharField(max_length=50 , null=True , blank=True)  
+    city = models.CharField(max_length=50 , null=True , blank=True)  
 
     def __str__(self):
         return self.name
+
 
     
 
@@ -32,4 +38,15 @@ class BonusEntry(models.Model):
         return f"BonusEntry for {self.contact} on {self.date}"
 
 
-    
+
+from django.db import models
+from django.contrib.auth.models import User
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    is_logged_in = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.user.username
+
+

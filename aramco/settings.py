@@ -129,6 +129,8 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# settings.py
+LOGIN_URL = '/operator_login/'  # URL for your login page
 
 
 api_key = 'TEbVJ1uBlNCZ0gWYmVmTjtl9LOt0IvUe'

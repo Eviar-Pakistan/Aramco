@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aramco- Bonus Entries</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="{% static 'css/style.css' %}" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="sm:bg-[#f2f2f2] grid items-center justify-center h-screen relative font-manifapro " style="background-image: url('{% static 'images/ground.jpg' %}');background-attachment: fixed; background-size: cover; background-position: center; background-repeat: no-repeat;
+">
+    {% comment %} <div class="absolute top-0 left-0 -z-20 w-full h-full bg-cover bg-fixed bg-center" style="background-image: url('{% static 'images/ground.jpg' %}');background-attachment: fixed; 
+"></div> {% endcomment %}
+
+
+    <div id="popup" class="hidden bg-[#0080e1] text-white w-[200px] h-[200px] flex items-center justify-center rounded-lg">
+        <p class="text-xl text-center">Your entry has been submitted</p>
+    </div>
+
+
+    <img id="main_bg" src="{% static 'images/top_bg.png' %}" class="w-full max-w-md h-auto">
+    <div id="main" class="sm:shadow-md bg-[#0080e1]/80 p-8 w-full max-w-md rounded-b-lg h-screen">
+        <div class="flex items-center justify-center">
+            <img src="{% static 'images/logo.png' %}" alt="Aramco Logo" class="mb-2 sm:w-36 w-28 h-auto">
+        </div>
+       
+        <form id="loginForm" method="POST">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="username" class="block text-sm font-medium mb-2 text-white tracking-[1px]">Username</label>
+                <input type="text" id="username" name="username" class="w-full border-2 placeholder-white text-white border-white p-2 focus:outline-none focus:border-green-500 rounded-md bg-transparent" placeholder="Enter your username" required>
+            </div>
+            <div class="mb-4">
+                <label for="entries" class="block text-sm font-medium mb-2 text-white tracking-[1px]">Password</label>
+                <input type="password" id="password" name="password" class="w-full border-2 placeholder-white text-white border-white p-2 focus:outline-none focus:border-green-500 rounded-md bg-transparent" placeholder="Enter your contact number" required>
+
+            </div>
+            <button type="submit" class="w-full hover:text-white text-[#0080e1] font-medium py-2 rounded-md bg-white hover:bg-transparent transition duration-200 border-2 border-white">Login</button>
+        </form>
+    </div>
+
+    <script src="{% static 'js/index.js' %}"></script>
+
+</body>
+</html>

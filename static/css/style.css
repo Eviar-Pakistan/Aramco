@@ -1,12 +1,12 @@
 @font-face {
     font-family: 'MyCustomFont';
-    src: url('ManifaPro2_2.224-Regular.otf') format('woff2');
+    src: url('fonts/ManifaPro2_2.224-Regular.otf') format('woff2');
     font-weight: normal;
     font-style: normal;
 }
 @font-face {
     font-family: 'ManifaPro';
-    src: url('{% static "ManifaPro2_2.224-Regular.otf" %}') format('opentype');
+    src: url("fonts/ManifaPro2_2.224-Regular.otf") format('opentype');
     font-weight: normal;
     font-style: normal;
 }

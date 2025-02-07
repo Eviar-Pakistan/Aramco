@@ -10,6 +10,77 @@ from aramco.settings import api_key,from_number
 def home(request):
     return render(request, 'form.html')
 
+from django.contrib.auth import authenticate, login
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+
+
+from django.contrib.auth import authenticate, login
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import UserProfile,User
+import json
+
+
+# user = User.objects.create_user(
+#             username="river7890",
+#             password="987revir",
+#         )
+# user.save()
+
+from django.contrib.auth.decorators import login_required
+
+
+
+from django.contrib.auth import authenticate, login
+from django.http import JsonResponse
+from django.shortcuts import render
+import json
+from .models import UserProfile
+
+@csrf_exempt
+def operator_login(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+            password = data.get('password')
+            
+            print(f"Username: {username}, Password: {password}")
+
+            if not username or not password:
+                return JsonResponse({'error': 'Username and password are required!'}, status=400)
+
+            # Authenticate the user
+            user = authenticate(request, username=username, password=password)
+            print(f"Authenticated user: {user}")
+
+            if user is not None:
+                # Check if the user is already logged in by checking the `is_logged_in` flag
+                user_profile, created = UserProfile.objects.get_or_create(user=user)
+
+                if user_profile.is_logged_in:
+                    return JsonResponse({'error': 'User is already logged in and cannot log in again!'}, status=400)
+
+                # Login the user
+                login(request, user)
+
+                # Set is_logged_in to True
+                user_profile.is_logged_in = True
+                user_profile.save()
+
+                return JsonResponse({'success': 'User logged in successfully!'}, status=200)
+            else:
+                return JsonResponse({'error': 'Invalid credentials!'}, status=401)
+
+        except Exception as e:
+            print(f"Error: {str(e)}")
+            return JsonResponse({'error': f"Something went wrong: {str(e)}"}, status=500)
+
+    return render(request, 'operator-login.html')
+
 
 
 
@@ -20,6 +91,9 @@ def register(request):
             # Parse JSON data from the request
             data = json.loads(request.body)
             contact = data.get("contact")
+            location = data.get('location', {})
+            latitude = location.get('latitude')
+            longitude = location.get('longitude')
             
             # Check if the contact already exists in the database
             participant = Participant.objects.filter(contact=contact).first()
@@ -39,9 +113,14 @@ def register(request):
                     contact=contact,
                     email=data.get("email"),
                     fuel_type=data.get("fuel_type"),
+                    cnic = data.get("cnic"),
                     vehicle_number=data.get("vehicle_number"),
                     receipt_number=data.get("receipt_number"),
-                    entry_count=1,  # Initial entry count
+                    latitude=latitude,
+                    longitude=longitude,
+                    vehicle=data.get('vehicle'),
+                    city= data.get('city'),
+                    entry_count=1,  
                 )
             
             return JsonResponse({"message": "Registration successful!", "id": participant.id}, status=201)
@@ -97,7 +176,13 @@ import json
 
 from .models import BonusEntry, Participant
 
-@csrf_exempt
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
+from datetime import datetime
+import json
+
+@login_required(login_url='/operator_login/')  # Redirects to '/operator_login/' if not logged in
 def submit_bonus_entry(request):
     if request.method == "POST":
         try:
@@ -144,3 +229,4 @@ def submit_bonus_entry(request):
     
     # For non-POST requests, render the form template.
     return render(request, 'bonusform.html')
+
