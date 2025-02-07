@@ -23,6 +23,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import UserProfile,User
 import json
 
+# from django.contrib.auth.models import User
 
 # user = User.objects.create_user(
 #             username="river7890",
