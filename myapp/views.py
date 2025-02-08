@@ -23,13 +23,56 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import UserProfile,User
 import json
 
-# from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 
-# user = User.objects.create_user(
-#             username="river7890",
-#             password="987revir",
-#         )
-# user.save()
+users = [
+    {"username": "QuantumSparrow73", "password": "Quantum@123"},
+    {"username": "IronCladPhoenix12", "password": "Phoenix!789"},
+    {"username": "MidnightZephyr99", "password": "Midnight#456"},
+    {"username": "TurboFalconX82", "password": "FalconX@99"},
+    {"username": "StellarRaven04", "password": "Raven_04"},
+    {"username": "MysticVoyager17", "password": "Mystic$17"},
+    {"username": "CyberWolfAlpha76", "password": "CyberWolf76"},
+    {"username": "ShadowNovaX5", "password": "Shadow_95"},
+    {"username": "BlazeCometX93", "password": "Blaze#93"},
+    {"username": "ArcticPulse23", "password": "Pulse@23"},
+    {"username": "LunarGuardian77", "password": "Guardian77"},
+    {"username": "ElectricNebula42", "password": "Nebula$42"},
+    {"username": "CrystalHorizon88", "password": "Crystal88"},
+    {"username": "TurboPanther44", "password": "Panther44!"},
+    {"username": "FrostInferno65", "password": "Inferno65"},
+    {"username": "ZenithVoyager90", "password": "Zenith90@"},
+    {"username": "CosmicRaider71", "password": "Raider71"},
+    {"username": "ApexCyclone99", "password": "Cyclone99"},
+    {"username": "NebulaSeeker35", "password": "Seeker_35"},
+    {"username": "VulcanStrider03", "password": "Strider03"},
+    {"username": "GalacticHunter54", "password": "Hunter54"},
+    {"username": "HyperWave22", "password": "Wave22!"},
+    {"username": "BlazeShadow72", "password": "Shadow72$"},
+    {"username": "StellarEcho19", "password": "Echo19"},
+    {"username": "PrismSpecter84", "password": "Specter84"},
+    {"username": "PhoenixAbyss63", "password": "Abyss63!"},
+    {"username": "SolarVortex47", "password": "Vortex47"},
+    {"username": "NimbusFalcon15", "password": "Nimbus15"},
+    {"username": "ThunderSage39", "password": "Thunder39"},
+    {"username": "ArcticSonicX01", "password": "SonicX01"},
+    {"username": "DeltaStriker92", "password": "Striker92!"},
+    {"username": "BlazeThrone12", "password": "Throne12"},
+    {"username": "VectorFlame76", "password": "Vector76"},
+    {"username": "SapphirePulse08", "password": "Sapphire08"},
+    {"username": "IonStorm99", "password": "IonStorm99"},
+]
+
+for user in users:
+    username = user["username"]
+    password = user["password"]
+
+    if User.objects.filter(username=username).exists():
+        print(f"User '{username}' already exists. Skipping.")
+    else:
+        User.objects.create_user(username=username, password=password)
+        print(f"User '{username}' created successfully!")
+
 
 from django.contrib.auth.decorators import login_required
 

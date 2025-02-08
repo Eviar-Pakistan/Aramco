@@ -15,7 +15,8 @@ function getCookie(name) {
 }
 
 const csrftoken = getCookie('csrftoken');
-
+const vehicleTypeEncoded = new URLSearchParams(window.location.search).get('vehicle');
+const cityEncoded = new URLSearchParams(window.location.search).get('city');
 const companyEncoded = new URLSearchParams(window.location.search).get('company');
 if (companyEncoded) {
   try {
@@ -23,7 +24,7 @@ if (companyEncoded) {
     console.log("Decoded Company:", decodedCompany);
         localStorage.setItem("company", decodedCompany);
     if (decodedCompany === "Aramcocooperator" && window.location.pathname !== '/operator_login/') {
-      window.location.href = '/operator_login';
+      window.location.href = `/operator_login/?vehicle=${vehicleTypeEncoded}&city=${cityEncoded}`;
       localStorage.removeItem('submittedEntries'); 
     }
   } catch (error) {
@@ -33,250 +34,330 @@ if (companyEncoded) {
 
 const isLoggedIn = localStorage.getItem('isLoggedIn')
 if (isLoggedIn && !['/submit_bonus_entry/', '/'].includes(window.location.pathname)) {
-  window.location.href = '/';
+  window.location.href = `/?vehicle=${vehicleTypeEncoded}&city=${cityEncoded}` ;
 }
 
 const savedCompany = localStorage.getItem("company")
 document.addEventListener('DOMContentLoaded', () => {
 
+
+console.log(vehicleTypeEncoded , cityEncoded)
+
 const main = document.getElementById("main");
 const main_bg = document.getElementById("main_bg");
 
+const submitButton = document.getElementById('submitBtn');
+// Terms and conditions Opener
+const OpenTerms = document.getElementById('open-terms');
+const termsModal = document.getElementById('terms-modal');
+const closeTerms = document.getElementById('close-terms-modal');
+
+
+// Open
+ OpenTerms && OpenTerms.addEventListener('click', () => { 
+    termsModal.classList.remove("hidden");
+    main.classList.add("hidden");
+    main_bg.classList.add("hidden");
+})
+
+// close
+closeTerms && closeTerms.addEventListener('click', () => {
+    termsModal.classList.add("hidden");
+    main.classList.remove("hidden");
+    main_bg.classList.remove("hidden");
+ })
+
+
 submitButton && submitButton.addEventListener('click', async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    // Get the form and its values
-    const form = document.querySelector("form");
-    const name = document.getElementById("name").value.trim();
-    const contact = document.getElementById("contact").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const fuel = document.getElementById("fuel").value.trim();
-    const vehicle = document.getElementById("vehicle").value.trim();
-    const receipt = document.getElementById("receipt").value.trim();
-    const cnic = document.getElementById("cnic").value.trim();
-    const vehicleTypeEncoded = new URLSearchParams(window.location.search).get('vehicle');
-    const cityEncoded = new URLSearchParams(window.location.search).get('city');
+  // Get the form and its values
+  const form = document.querySelector("form");
+  const name = document.getElementById("name").value.trim();
+  const contact = document.getElementById("contact").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const cnic = document.getElementById("cnicNo").value.trim()
+  const fuel = document.getElementById("fuel").value.trim();
+  const vehicle = document.getElementById("vehicle").value.trim();
+  const receipt = document.getElementById("receipt").value.trim();
+  const checkbox = document.getElementById("checkbox2").checked
+  const vehicleTypeEncoded = new URLSearchParams(window.location.search).get('vehicle');
+  const cityEncoded = new URLSearchParams(window.location.search).get('city');
 
-    let vehicleType = null;
-    let city = null;
+  let vehicleType = null;
+  let city = null;
 
-    if (vehicleTypeEncoded) {
-        try {
-            vehicleType = atob(vehicleTypeEncoded);
-            console.log('Decoded Vehicle Type:', vehicleType);
-        } catch (error) {
-            console.error("Error decoding vehicle type:", error);
-        }
-    }
+  if (vehicleTypeEncoded) {
+      try {
+          vehicleType = atob(vehicleTypeEncoded);
+      } catch (error) {
+          console.error("Error decoding vehicle type:", error);
+          vehicleType = null;
+      }
+  }
 
-    if (cityEncoded) {
-        try {
-            city = atob(cityEncoded);
-            console.log('Decoded City:', city);
-        } catch (error) {
-            console.error("Error decoding city:", error);
-        }
-    }
+  if (cityEncoded) {
+      try {
+          city = atob(cityEncoded);
+      } catch (error) {
+          console.error("Error decoding city:", error);
+          city = null;
+      }
+  }
 
-    // Validate the form fields
-    const popup = document.getElementById("popup");
-    console.log(cnic);
+  if (companyEncoded) {
+    try {
+        const company = atob(companyEncoded);
+  
+        // If company matches, save to localStorage and redirect
+        if (company === "Aramcocooperator") {
 
-    if (!name || !contact || !cnic || !fuel || !vehicle) {
-        Swal.fire({
-            title: "Failed to Submit",
-            text: "All fields are required. Please fill in all the fields.",
-            icon: 'error',
-            customClass: {
-                popup: 'custom-swal-popup',
-                title: 'custom-swal-title',
-                confirmButton: 'custom-swal-confirm-button',
-            },
-            width: '350px',
-            padding: '15px',
-        });
-        return;
-    }
-
-    const nameRegex = /^[A-Za-z\s]+$/;
-    if (!nameRegex.test(name)) {
-        Swal.fire({
-            title: "Failed to Submit",
-            text: "Name must contain only alphabets and spaces.",
-            icon: 'error',
-            customClass: {
-                popup: 'custom-swal-popup',
-                title: 'custom-swal-title',
-                confirmButton: 'custom-swal-confirm-button',
-            },
-            width: '350px',
-            padding: '15px',
-        });
-        return;
-    }
-
-    const contactRegex = /^03\d{9}$/;
-    if (!contactRegex.test(contact)) {
-        Swal.fire({
-            title: "Failed to Submit",
-            text: "Contact number must start with '03' and be 11 digits long.",
-            icon: 'error',
-            customClass: {
-                popup: 'custom-swal-popup',
-                title: 'custom-swal-title',
-                confirmButton: 'custom-swal-confirm-button',
-            },
-            width: '350px',
-            padding: '15px',
-        });
-        return;
-    }
-
-    let contactNo = Number(contact);
-
-    function generateRandomId() {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let randomId = '';
-        for (let i = 0; i < 36; i++) {
-            randomId += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return randomId;
-    }
-
-    const randomId = generateRandomId();
-
-    // Function to handle the submission once location is successfully retrieved
-    const submitFormWithLocation = async (locationData) => {
-        try {
-            let submittedEntries = savedCompany ? JSON.parse(localStorage.getItem('submittedEntries')) || 0 : 0;
-
-            if (savedCompany && submittedEntries >= 4) {
-                Swal.fire({
-                    title: "Submission Limit Reached",
-                    text: "Your device has exceeded the limit of 4 submissions.",
-                    icon: 'error',
-                    customClass: {
-                        popup: 'custom-swal-popup',
-                        title: 'custom-swal-title',
-                        confirmButton: 'custom-swal-confirm-button',
-                    },
-                    width: '350px',
-                    padding: '15px',
-                });
-                return;
+            if (localStorage.getItem('company') !== companyEncoded) {
+                // Only save and redirect if not already set
+                localStorage.setItem('company', companyEncoded);
+                window.location.href = `/operator_login/?vehicle=${vehicleTypeEncoded}&city=${cityEncoded}`;
+                localStorage.removeItem('submittedEntries');
             }
-
-            const response = await fetch("/api/register", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": csrftoken,
-                },
-                body: JSON.stringify({
-                    name: name,
-                    contact: contact,
-                    email: email,
-                    fuel_type: fuel,
-                    vehicle_number: vehicle,
-                    cnic: cnic,
-                    receipt_number: receipt,
-                    location: locationData,
-                    vehicle: vehicleType,
-                    city: city
-                }),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                console.log("Server Response:", data);
-
-                fetch('send_sms', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': csrftoken,
-                    },
-                    body: JSON.stringify({ contactNo: contactNo, randomId: randomId })
-                }).then(response => response.json())
-                  .then(data => {
-                      if (data.success) {
-                          // Handle successful SMS sending if needed
-                      }
-                  }).catch(error => {
-                      console.error("Error sending SMS:", error);
-                  });
-
-                popup.classList.remove("hidden");
-                main.classList.add("hidden");
-                main_bg.classList.add("hidden");
-                form.reset();
-
-                // Track submission only if `savedCompany` exists
-                if (savedCompany) {
-                    submittedEntries += 1;
-                    localStorage.setItem('submittedEntries', JSON.stringify(submittedEntries));
-                }
-            } else {
-                const errorData = await response.json();
-                Swal.fire({
-                    title: "Failed to Submit",
-                    text: errorData.error || "An error occurred. Please try again.",
-                    icon: 'error',
-                    customClass: {
-                        popup: 'custom-swal-popup',
-                        title: 'custom-swal-title',
-                        confirmButton: 'custom-swal-confirm-button',
-                    },
-                    width: '350px',
-                    padding: '15px',
-                });
-            }
-        } catch (error) {
-            console.error("Error:", error);
-            alert("An error occurred while submitting the form. Please try again.");
         }
-    };
-
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const locationData = {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude,
-                };
-
-                submitFormWithLocation(locationData);
-            },
-            (error) => {
-                console.error("Error obtaining location:", error);
-                Swal.fire({
-                    title: "Location Access Required",
-                    text: "You must grant location access to submit the form.",
-                    icon: 'error',
-                    customClass: {
-                        popup: 'custom-swal-popup',
-                        title: 'custom-swal-title',
-                        confirmButton: 'custom-swal-confirm-button',
-                    },
-                    width: '350px',
-                    padding: '15px',
-                });
-            }
-        );
-    } else {
-        Swal.fire({
-            title: "Location Access Required",
-            text: "Geolocation is not supported by your browser. You must grant location access to submit the form.",
-            icon: 'error',
-            customClass: {
-                popup: 'custom-swal-popup',
-                title: 'custom-swal-title',
-                confirmButton: 'custom-swal-confirm-button',
-            },
-            width: '350px',
-            padding: '15px',
-        });
+    } catch (error) {
+        console.error("Error decoding company parameter:", error);
     }
+  }
+
+  // Rest of the code for form submission remains the same...
+  const popup = document.getElementById("popup");
+  if (!name || !contact || !cnic || !fuel || !vehicle ) {
+      Swal.fire({
+          title: "Failed to Submit",
+          text: "All fields are required. Please fill in all the fields.",
+          icon: 'error',
+          customClass: {
+              popup: 'custom-swal-popup',
+              title: 'custom-swal-title',
+              confirmButton: 'custom-swal-confirm-button',
+          },
+          width: '350px',
+          padding: '15px',
+      });
+      return;
+  }
+
+  // Validate name, contact, and other form fields
+  const nameRegex = /^[A-Za-z\s]+$/;
+  if (!nameRegex.test(name)) {
+      Swal.fire({
+          title: "Failed to Submit",
+          text: "Name must contain only alphabets and spaces.",
+          icon: 'error',
+          customClass: {
+              popup: 'custom-swal-popup',
+              title: 'custom-swal-title',
+              confirmButton: 'custom-swal-confirm-button',
+          },
+          width: '350px',
+          padding: '15px',
+      });
+      return;
+  }
+
+  const cnicRegex = /^\d{5}-\d{7}-\d{1}$/; 
+  if (!cnicRegex.test(cnic)) {
+      Swal.fire({
+          title: "Failed to Submit",
+          text: "CNIC must be in the format XXXXX-XXXXXXX-X.",
+          icon: 'error',
+          customClass: {
+              popup: 'custom-swal-popup',
+              title: 'custom-swal-title',
+              confirmButton: 'custom-swal-confirm-button',
+          },
+          width: '350px',
+          padding: '15px',
+      });
+      return;
+  }
+
+  const contactRegex = /^03\d{9}$/;
+  if (!contactRegex.test(contact)) {
+      Swal.fire({
+          title: "Failed to Submit",
+          text: "Contact number must start with '03' and be 11 digits long.",
+          icon: 'error',
+          customClass: {
+              popup: 'custom-swal-popup',
+              title: 'custom-swal-title',
+              confirmButton: 'custom-swal-confirm-button',
+          },
+          width: '350px',
+          padding: '15px',
+      });
+      return;
+  }
+
+  if (!checkbox) {
+    Swal.fire({
+        title: "Failed to Submit",
+        text: "Terms & conditions are required",
+        icon: 'error',
+        customClass: {
+            popup: 'custom-swal-popup',
+            title: 'custom-swal-title',
+            confirmButton: 'custom-swal-confirm-button',
+        },
+        width: '350px',
+        padding: '15px',
+    });
+    return;
+}
+
+  let contactNo = Number(contact);
+
+  function generateRandomId() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let randomId = '';
+      for (let i = 0; i < 36; i++) {
+          randomId += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return randomId;
+  }
+
+  const randomId = generateRandomId();
+
+  // Function to handle the submission once location is successfully retrieved
+  const submitFormWithLocation = async (locationData) => {
+      try {
+          let submittedEntries = JSON.parse(localStorage.getItem('submittedEntries')) || 0;
+
+          if (!isLoggedIn && submittedEntries >= 4) {
+              Swal.fire({
+                  title: "Submission Limit Reached",
+                  text: "Your device has exceeded the limit of 4 submissions.",
+                  icon: 'error',
+                  customClass: {
+                      popup: 'custom-swal-popup',
+                      title: 'custom-swal-title',
+                      confirmButton: 'custom-swal-confirm-button',
+                  },
+                  width: '350px',
+                  padding: '15px',
+              });
+              return;
+          }
+
+          const response = await fetch("/api/register", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+                  "X-CSRFToken": csrftoken,
+              },
+              body: JSON.stringify({
+                  name: name,
+                  contact: contact,
+                  email: email,
+                  fuel_type: fuel,
+                  vehicle_number: vehicle,
+                  cnic:cnic,
+                  receipt_number: receipt,
+                  location: locationData,
+                  vehicle: vehicleType,
+                  city : city
+              }),
+          });
+
+          if (response.ok) {
+              const data = await response.json();
+              console.log("Server Response:", data);
+
+              fetch('send_sms', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'X-CSRFToken': csrftoken,
+                  },
+                  body: JSON.stringify({ contactNo: contactNo, randomId: randomId })
+              })
+              .then(response => response.json())
+              .then(data => {
+                  if (data.success) {
+                    popup.classList.remove("hidden");
+                    main.classList.add("hidden");
+                    main_bg.classList.add("hidden");
+                    form.reset();                   }
+              })
+              .catch(error => {
+                  console.error("Error sending SMS:", error);
+              });
+              popup.classList.remove("hidden");
+              main.classList.add("hidden");
+              main_bg.classList.add("hidden");
+              form.reset(); // Clear the form fields
+              if (!isLoggedIn) {
+                  submittedEntries += 1;
+                  localStorage.setItem('submittedEntries', JSON.stringify(submittedEntries));
+              }
+
+              
+          } else {
+              const errorData = await response.json();
+              Swal.fire({
+                  title: "Failed to Submit",
+                  text: errorData.error || "An error occurred. Please try again.",
+                  icon: 'error',
+                  customClass: {
+                      popup: 'custom-swal-popup',
+                      title: 'custom-swal-title',
+                      confirmButton: 'custom-swal-confirm-button',
+                  },
+                  width: '350px',
+                  padding: '15px',
+              });
+          }
+      } catch (error) {
+          console.error("Error:", error);
+          alert("An error occurred while submitting the form. Please try again.");
+      }
+  };
+
+  if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+          (position) => {
+              const locationData = {
+                  latitude: position.coords.latitude,
+                  longitude: position.coords.longitude,
+              };
+
+              submitFormWithLocation(locationData);
+          },
+          (error) => {
+              console.error("Error obtaining location:", error);
+              Swal.fire({
+                  title: "Location Access Required",
+                  text: "You must grant location access to submit the form.",
+                  icon: 'error',
+                  customClass: {
+                      popup: 'custom-swal-popup',
+                      title: 'custom-swal-title',
+                      confirmButton: 'custom-swal-confirm-button',
+                  },
+                  width: '350px',
+                  padding: '15px',
+              });
+          }
+      );
+  } else {
+      Swal.fire({
+          title: "Location Access Required",
+          text: "Geolocation is not supported by your browser. You must grant location access to submit the form.",
+          icon: 'error',
+          customClass: {
+              popup: 'custom-swal-popup',
+              title: 'custom-swal-title',
+              confirmButton: 'custom-swal-confirm-button',
+          },
+          width: '350px',
+          padding: '15px',
+      });
+  }
 });
 
 
@@ -288,6 +369,8 @@ loginForm && loginForm.addEventListener("submit", async (e) => {
 
   const username = document.getElementById("username").value.trim();
   const password = document.getElementById("password").value.trim();
+
+  
 
   if (!username || !password) {
     Swal.fire({
@@ -319,9 +402,9 @@ loginForm && loginForm.addEventListener("submit", async (e) => {
         text: data.success,
         icon: 'success',
       });
-      localStorage.setItem("isLoggedIn",true)
       // Redirect to the bonus entry page or any other page after successful login
-      window.location.href = '/'; // Example: redirect to another page after success
+      window.location.href = `/?vehicle=${vehicleTypeEncoded}&city=${cityEncoded}`; // Example: redirect to another page after success
+      localStorage.setItem("isLoggedIn",true)
     } else {
       Swal.fire({
         title: "Error",
