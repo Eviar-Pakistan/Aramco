@@ -16,7 +16,7 @@ function getCookie(name) {
 
 const csrftoken = getCookie('csrftoken');
 const vehicleTypeEncoded = new URLSearchParams(window.location.search).get('vehicle');
-const cityEncoded = new URLSearchParams(window.location.search).get('city');
+const cityEncoded = new URLSearchParams(window.location.search).get('station');
 const companyEncoded = new URLSearchParams(window.location.search).get('company');
 if (companyEncoded) {
   try {
@@ -24,7 +24,7 @@ if (companyEncoded) {
     console.log("Decoded Company:", decodedCompany);
         localStorage.setItem("company", decodedCompany);
     if (decodedCompany === "Aramcocooperator" && window.location.pathname !== '/operator_login/') {
-      window.location.href = `/operator_login/?vehicle=${vehicleTypeEncoded}&city=${cityEncoded}`;
+      window.location.href = `/operator_login/?vehicle=${vehicleTypeEncoded}&station=${cityEncoded}`;
       localStorage.removeItem('submittedEntries'); 
     }
   } catch (error) {
@@ -34,7 +34,7 @@ if (companyEncoded) {
 
 const isLoggedIn = localStorage.getItem('isLoggedIn')
 if (isLoggedIn && !['/submit_bonus_entry/', '/'].includes(window.location.pathname)) {
-  window.location.href = `/?vehicle=${vehicleTypeEncoded}&city=${cityEncoded}` ;
+  window.location.href = `/?vehicle=${vehicleTypeEncoded}&station=${cityEncoded}` ;
 }
 
 const savedCompany = localStorage.getItem("company")
@@ -82,7 +82,7 @@ submitButton && submitButton.addEventListener('click', async (e) => {
   const receipt = document.getElementById("receipt").value.trim();
   const checkbox = document.getElementById("checkbox2").checked
   const vehicleTypeEncoded = new URLSearchParams(window.location.search).get('vehicle');
-  const cityEncoded = new URLSearchParams(window.location.search).get('city');
+  const cityEncoded = new URLSearchParams(window.location.search).get('station');
 
   let vehicleType = null;
   let city = null;
@@ -115,7 +115,7 @@ submitButton && submitButton.addEventListener('click', async (e) => {
             if (localStorage.getItem('company') !== companyEncoded) {
                 // Only save and redirect if not already set
                 localStorage.setItem('company', companyEncoded);
-                window.location.href = `/operator_login/?vehicle=${vehicleTypeEncoded}&city=${cityEncoded}`;
+                window.location.href = `/operator_login/?vehicle=${vehicleTypeEncoded}&station=${cityEncoded}`;
                 localStorage.removeItem('submittedEntries');
             }
         }
@@ -403,7 +403,7 @@ loginForm && loginForm.addEventListener("submit", async (e) => {
         icon: 'success',
       });
       // Redirect to the bonus entry page or any other page after successful login
-      window.location.href = `/?vehicle=${vehicleTypeEncoded}&city=${cityEncoded}`; // Example: redirect to another page after success
+      window.location.href = `/?vehicle=${vehicleTypeEncoded}&station=${cityEncoded}`; // Example: redirect to another page after success
       localStorage.setItem("isLoggedIn",true)
     } else {
       Swal.fire({

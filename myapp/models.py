@@ -1,8 +1,10 @@
+from django.utils.timezone import now
 from django.db import models
-from datetime import datetime
 
 
 class Participant(models.Model):
+    date = models.DateField(now)
+    created_at = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=100)
     contact = models.CharField(max_length=15)
     email = models.EmailField()
@@ -22,17 +24,15 @@ class Participant(models.Model):
 
     
 
-
-from django.db import models
-from datetime import datetime
-
 class BonusEntry(models.Model):
     contact = models.CharField(max_length=15)
     entries = models.IntegerField()
-    date = models.DateField(default=datetime.now)  # Date when entry is made
+    date = models.DateField(now)  # Date when entry is made
     entry_marked = models.BooleanField(default=False)  # True if bonus entry is marked, else False
     latitude = models.FloatField(null=True, blank=True)   # Optional latitude from user location
     longitude = models.FloatField(null=True, blank=True)  # Optional longitude from user location
+    created_at = models.DateTimeField(auto_now_add=True)
+
 
     def __str__(self):
         return f"BonusEntry for {self.contact} on {self.date}"
