@@ -83,6 +83,7 @@ submitButton && submitButton.addEventListener('click', async (e) => {
   const checkbox = document.getElementById("checkbox2").checked
   const vehicleTypeEncoded = new URLSearchParams(window.location.search).get('vehicle');
   const cityEncoded = new URLSearchParams(window.location.search).get('station');
+  const operator = localStorage.getItem("operator")
 
   let vehicleType = null;
   let city = null;
@@ -129,7 +130,7 @@ submitButton && submitButton.addEventListener('click', async (e) => {
   if (!name || !contact || !cnic || !fuel || !vehicle ) {
       Swal.fire({
           title: "Failed to Submit",
-          text: "All fields are required. Please fill in all the fields.",
+          text: "Please fill in all required fields: Name, CNIC, Phone number and Vehicle number",
           icon: 'error',
           customClass: {
               popup: 'custom-swal-popup',
@@ -260,7 +261,9 @@ submitButton && submitButton.addEventListener('click', async (e) => {
                   receipt_number: receipt,
                   location: locationData,
                   vehicle: vehicleType,
-                  city : city
+                  city : city,
+                  operator:operator
+               
               }),
           });
 
@@ -318,7 +321,7 @@ submitButton && submitButton.addEventListener('click', async (e) => {
       }
   };
 
-  if (navigator.geolocation) {
+ if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
           (position) => {
               const locationData = {
@@ -358,6 +361,7 @@ submitButton && submitButton.addEventListener('click', async (e) => {
           padding: '15px',
       });
   }
+
 });
 
 
@@ -405,6 +409,7 @@ loginForm && loginForm.addEventListener("submit", async (e) => {
       // Redirect to the bonus entry page or any other page after successful login
       window.location.href = `/?vehicle=${vehicleTypeEncoded}&station=${cityEncoded}`; // Example: redirect to another page after success
       localStorage.setItem("isLoggedIn",true)
+      localStorage.setItem('operator',username)
     } else {
       Swal.fire({
         title: "Error",

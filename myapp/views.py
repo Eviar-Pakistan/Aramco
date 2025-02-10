@@ -115,6 +115,7 @@ def register(request):
                     longitude=longitude,
                     vehicle=data.get('vehicle'),
                     city= data.get('city'),
+                    operator = data.get('operator'),
                     entry_count=1,  
                 )
             
@@ -195,33 +196,17 @@ def submit_bonus_entry(request):
         if not Participant.objects.filter(contact=contact).exists():
             return JsonResponse({'error': 'There is not any entry for this contact number.'}, status=400)
 
-        existing_contact = BonusEntry.objects.filter(contact=contact).first()
+        # Create a new BonusEntry for the given contact, even if one already exists.
+        BonusEntry.objects.create(
+            contact=contact,
+            entries=entries,
+            entry_marked=True,
+            latitude=latitude,
+            longitude=longitude
+        )
+        return JsonResponse({'success': 'Bonus entry has been marked successfully!'})
 
-        if not existing_contact:
-            BonusEntry.objects.create(
-                contact=contact,
-                entries=entries,
-                entry_marked=True,
-                latitude=latitude,
-                longitude=longitude
-            )
-            return JsonResponse({'success': 'Bonus entry has been marked successfully!'})
-        else:
-            # Get today's date.
-            today = datetime.now().date()
-            # Check if there is already a bonus entry for this contact on today's date.
-            existing_entry = BonusEntry.objects.filter(contact=contact, date=today).first()
-            if not existing_entry:
-                # Update the existing contact's record with the new number of entries, location, and mark it.
-                existing_contact.entries = entries
-                existing_contact.entry_marked = True
-                existing_contact.latitude = latitude
-                existing_contact.longitude = longitude
-                existing_contact.save()
-                return JsonResponse({'success': 'Bonus entry has been marked successfully!'})
-            else:
-                return JsonResponse({'error': 'Bonus entries already marked for this contact.'})
-    
     # For non-POST requests, render the form template.
     return render(request, 'bonusform.html')
+
 
