@@ -83,8 +83,7 @@ submitButton && submitButton.addEventListener('click', async (e) => {
   const checkbox = document.getElementById("checkbox2").checked
   const vehicleTypeEncoded = new URLSearchParams(window.location.search).get('vehicle');
   const cityEncoded = new URLSearchParams(window.location.search).get('station');
-  const operator = localStorage.getItem("operator")
-
+  const operator = localStorage.getItem("company")
   let vehicleType = null;
   let city = null;
 
@@ -105,16 +104,11 @@ submitButton && submitButton.addEventListener('click', async (e) => {
           city = null;
       }
   }
-
   if (companyEncoded) {
     try {
-        const company = atob(companyEncoded);
-  
-        // If company matches, save to localStorage and redirect
-        if (company === "Aramcocooperator") {
-
+      const company = atob(companyEncoded);
+        if (company === "Aramcocooperator"){
             if (localStorage.getItem('company') !== companyEncoded) {
-                // Only save and redirect if not already set
                 localStorage.setItem('company', companyEncoded);
                 window.location.href = `/operator_login/?vehicle=${vehicleTypeEncoded}&station=${cityEncoded}`;
                 localStorage.removeItem('submittedEntries');
@@ -262,7 +256,7 @@ submitButton && submitButton.addEventListener('click', async (e) => {
                   location: locationData,
                   vehicle: vehicleType,
                   city : city,
-                  operator:operator
+                  operator: operator
                
               }),
           });
@@ -409,7 +403,6 @@ loginForm && loginForm.addEventListener("submit", async (e) => {
       // Redirect to the bonus entry page or any other page after successful login
       window.location.href = `/?vehicle=${vehicleTypeEncoded}&station=${cityEncoded}`; // Example: redirect to another page after success
       localStorage.setItem("isLoggedIn",true)
-      localStorage.setItem('operator',username)
     } else {
       Swal.fire({
         title: "Error",

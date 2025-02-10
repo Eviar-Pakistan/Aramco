@@ -130,21 +130,17 @@ def register(request):
 def send_sms(request):
     if request.method == "POST":
         try:
-            # Parse the request body
             data = json.loads(request.body)
-            contact_no = data.get('contactNo')  # Get the contact number from the request
-            random_transcation_id = data.get('randomId')  # Get the random transaction ID from the request
-        
-
-            # Construct the URL
+            contact_no = data.get('contactNo')
+            random_transcation_id = data.get('randomId')
+       
             url = f'https://api.itelservices.net/send.php?transaction_id={random_transcation_id}&api_key={api_key}&number=92{contact_no}&text=Your entry has been received for Aramco CT25 lucky draw!&from={from_number}&type=sms'
 
-            # Send the request
+            
             response = requests.get(url)
             
             print(response.text)
 
-            # Handle the response
             if response.status_code == 200:
                 return JsonResponse({'success': True, 'message': 'SMS sent successfully.'}, status=200)
             else:
@@ -156,22 +152,11 @@ def send_sms(request):
 
 
 
-from django.shortcuts import render
+
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from datetime import datetime
 import json
-
-from .models import BonusEntry, Participant  
-
-from django.shortcuts import render
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from datetime import datetime
-import json
-
 from .models import BonusEntry, Participant
-
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
