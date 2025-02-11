@@ -220,100 +220,105 @@ submitButton && submitButton.addEventListener('click', async (e) => {
 
   // Function to handle the submission once location is successfully retrieved
   const submitFormWithLocation = async (locationData) => {
-      try {
-          let submittedEntries = JSON.parse(localStorage.getItem('submittedEntries')) || 0;
+    try {
+        let submittedEntries = JSON.parse(localStorage.getItem('submittedEntries')) || 0;
 
-          if (!isLoggedIn && submittedEntries >= 4) {
-              Swal.fire({
-                  title: "Submission Limit Reached",
-                  text: "Your device has exceeded the limit of 4 submissions.",
-                  icon: 'error',
-                  customClass: {
-                      popup: 'custom-swal-popup',
-                      title: 'custom-swal-title',
-                      confirmButton: 'custom-swal-confirm-button',
-                  },
-                  width: '350px',
-                  padding: '15px',
-              });
-              return;
-          }
+        if (!isLoggedIn && submittedEntries >= 4) {
+            Swal.fire({
+                title: "Submission Limit Reached",
+                text: "Your device has exceeded the limit of 4 submissions.",
+                icon: 'error',
+                customClass: {
+                    popup: 'custom-swal-popup',
+                    title: 'custom-swal-title',
+                    confirmButton: 'custom-swal-confirm-button',
+                },
+                width: '350px',
+                padding: '15px',
+            });
+            return;
+        }
 
-          const response = await fetch("/api/register", {
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json",
-                  "X-CSRFToken": csrftoken,
-              },
-              body: JSON.stringify({
-                  name: name,
-                  contact: contact,
-                  email: email,
-                  fuel_type: fuel,
-                  vehicle_number: vehicle,
-                  cnic:cnic,
-                  receipt_number: receipt,
-                  location: locationData,
-                  vehicle: vehicleType,
-                  city : city,
-                  operator: operator
-               
-              }),
-          });
+        const response = await fetch("/api/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrftoken,
+            },
+            body: JSON.stringify({
+                name: name,
+                contact: contact,
+                email: email,
+                fuel_type: fuel,
+                vehicle_number: vehicle,
+                cnic: cnic,
+                receipt_number: receipt,
+                location: locationData,
+                vehicle: vehicleType,
+                city: city,
+                operator: operator
+            }),
+        });
 
-          if (response.ok) {
-              const data = await response.json();
-              console.log("Server Response:", data);
+        if (response.ok) {
+            const data = await response.json();
+            console.log("Server Response:", data);
 
-              fetch('send_sms', {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json',
-                      'X-CSRFToken': csrftoken,
-                  },
-                  body: JSON.stringify({ contactNo: contactNo, randomId: randomId })
-              })
-              .then(response => response.json())
-              .then(data => {
-                  if (data.success) {
-                    popup.classList.remove("hidden");
-                    main.classList.add("hidden");
-                    main_bg.classList.add("hidden");
-                    form.reset();                   }
-              })
-              .catch(error => {
-                  console.error("Error sending SMS:", error);
-              });
-              popup.classList.remove("hidden");
-              main.classList.add("hidden");
-              main_bg.classList.add("hidden");
-              form.reset(); // Clear the form fields
-              if (!isLoggedIn) {
-                  submittedEntries += 1;
-                  localStorage.setItem('submittedEntries', JSON.stringify(submittedEntries));
-              }
+            // Check if operator is "Aramcooperator"
+            if (operator === "Aramcocooperator") {
+                fetch('send_sms', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken,
+                    },
+                    body: JSON.stringify({ contactNo: contactNo, randomId: randomId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        popup.classList.remove("hidden");
+                        main.classList.add("hidden");
+                        main_bg.classList.add("hidden");
+                        form.reset();
+                    }
+                })
+                .catch(error => {
+                    console.error("Error sending SMS:", error);
+                });
+            } else {
+                // Handle successful submission without sending SMS
+                popup.classList.remove("hidden");
+                main.classList.add("hidden");
+                main_bg.classList.add("hidden");
+                form.reset();
+            }
 
-              
-          } else {
-              const errorData = await response.json();
-              Swal.fire({
-                  title: "Failed to Submit",
-                  text: errorData.error || "An error occurred. Please try again.",
-                  icon: 'error',
-                  customClass: {
-                      popup: 'custom-swal-popup',
-                      title: 'custom-swal-title',
-                      confirmButton: 'custom-swal-confirm-button',
-                  },
-                  width: '350px',
-                  padding: '15px',
-              });
-          }
-      } catch (error) {
-          console.error("Error:", error);
-          alert("An error occurred while submitting the form. Please try again.");
-      }
-  };
+            if (!isLoggedIn) {
+                submittedEntries += 1;
+                localStorage.setItem('submittedEntries', JSON.stringify(submittedEntries));
+            }
+
+        } else {
+            const errorData = await response.json();
+            Swal.fire({
+                title: "Failed to Submit",
+                text: errorData.error || "An error occurred. Please try again.",
+                icon: 'error',
+                customClass: {
+                    popup: 'custom-swal-popup',
+                    title: 'custom-swal-title',
+                    confirmButton: 'custom-swal-confirm-button',
+                },
+                width: '350px',
+                padding: '15px',
+            });
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        alert("An error occurred while submitting the form. Please try again.");
+    }
+};
 
  if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
